@@ -19,15 +19,20 @@ public class Alphabet extends Input{
         return ch_input.charAt(0);
     }
 
-    public void SetAlph() {
+    public void SetAlph(Boolean eps) {
+        if (eps) this.alph.add('E');
         System.out.println("Введите ваш алфавит (0, чтобы закончить):");
         char user_input;
         int count = 1;
         while (true) {
             user_input = this.CharInput(String.format("Введите %d-ый символ: ", count));
             if(user_input == '0') break;
+            if(user_input == 'E') {
+                System.out.println("Символ Е зарезервирован");
+                continue;
+            }
             if(this.alph.contains(user_input)) {
-                System.out.println("Данный символ уже имеется в алфавите!");
+                System.out.println("Данный символ уже имеется в алфавите");
                 continue;
             }
             this.alph.add(user_input);

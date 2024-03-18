@@ -11,7 +11,7 @@ public class Program {
         System.out.println("Детерминизация конечных автоматов");
         // Получаем алфавит входных символов
         Alphabet a = new Alphabet();
-        a.SetAlph();
+        a.SetAlph(true);
         List<Character> alph = a.GetAlph();
         // Размер графа
         Input input = new Input();
@@ -41,16 +41,21 @@ public class Program {
             if (startVxs.contains(vx_idx)) vx.setState(false);
         }
         // Ввод таблицы переходов
-        Map<Integer, List<Vertex>> tableJump = new HashMap<>();
-        System.out.println("Введите переходы ('-1', если нет перехода):");
+        Map<Integer, List<List<Vertex>>> tableJump = new HashMap<>();
+        System.out.println("Введите переходы ('-1', чтобы закончить):");
         for (int i = 0; i < size; i++) {
-            List<Vertex> dst = new ArrayList<>();     // Ряд таблицы
+            List<List<Vertex>> dst = new ArrayList<>();     // Ряд таблицы
             for (int j = 0; j < alph.size(); j++) {
-                String comm = String.format("Введите переход из q%d по %s: ",
+                List<Vertex> cell = new ArrayList<>();      // Ячейка с вершинами
+                String comm = String.format("Введите переходы из q%d по %s: ",
                  i, alph.get(j));
-                int idx = input.Size(comm, -1, size - 1);
-                if (idx == -1) dst.add(null);
-                else dst.add(vxs.get(idx));
+                while (true) {
+                    int idx = input.Size(comm, -1, size - 1);
+                    if (idx == -1) break;
+                    cell.add(vxs.get(idx));
+                }
+                if (cell.size() == 0) dst.add(null);
+                else dst.add(cell);
             }
             tableJump.put(i, dst);
         }
@@ -64,7 +69,24 @@ public class Program {
         int[] fieldSizes = new int[labels.size()];
         Arrays.fill(fieldSizes, 7);
         Utils.PrintTable(labels.size(), labels.toArray(new String[0]), params, fieldSizes);
-        // TODO: Детерминизация автомата и вывод таблицы состояний
+
         // TODO: (Со звездочкой) Вывести эпсилон замыкания
+        Map<Integer, List<Vertex>> eps = new HashMap<>();
+        for (Integer idx : tableJump.keySet()) {
+            Vertex start = vxs.get(idx);
+            List<Vertex> dst = new ArrayList<>(Arrays.asList(start));
+
+            while(true) {
+                List<Vertex> jumps = tableJump.get(idx);
+                if (jumps.get(0) != null) {
+                    if ()
+                }
+            }
+
+        }
+        // TODO: Детерминизация автомата и вывод таблицы состояний
+
+
+
     }
 }
