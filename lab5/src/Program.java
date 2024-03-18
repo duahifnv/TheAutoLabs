@@ -71,25 +71,10 @@ public class Program {
         List<Integer> fieldSizes = new ArrayList<Integer>(Collections.nCopies(labels.size(), 7));
         Utils.PrintTable(labels.size(), labels, params, fieldSizes);
 
-        // TODO: (Со звездочкой) Вывести эпсилон замыкания
+        // Вывод эпсилон замыкания
         Determine det = new Determine(vxs, tableJump);
         det.CreateEps();
-
-        // for (Integer idx : tableJump.keySet()) {
-        //     Vertex start = vxs.get(idx);
-        //     List<Vertex> dst = new ArrayList<>(Arrays.asList(start));
-        //     while(true) {
-        //         List<List<Vertex>> jumps = tableJump.get(idx);
-        //         List<Vertex> epsVxs = jumps.get(0);
-        //         if (epsVxs != null) {
-        //             for (Vertex vertex : epsVxs) {
-        //                 if (!dst.contains(vertex)) dst.add(vertex);
-        //                 Runnable r = () -> {
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        det.PrintEps();
 
         // TODO: Детерминизация автомата и вывод таблицы состояний
 

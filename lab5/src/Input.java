@@ -31,7 +31,7 @@ public class Input {
             int num = Size(comm + ": ", -1, max);
             if(num == br) {
                 if (set.size() < min) {
-                    System.out.printf("Введите хотя бы %d числа%n", min);
+                    System.out.printf("Введите хотя бы %d чисел%n", min);
                     continue;
                 }
                 break;
