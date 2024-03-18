@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
@@ -52,6 +53,7 @@ public class Program {
                 while (true) {
                     int idx = input.Size(comm, -1, size - 1);
                     if (idx == -1) break;
+                    if (cell.contains(vxs.get(idx))) continue;
                     cell.add(vxs.get(idx));
                 }
                 if (cell.size() == 0) dst.add(null);
@@ -65,25 +67,28 @@ public class Program {
         }
 
         // Вывод таблицы переходов
-        String[][] params = Utils.MapToMatrix(tableJump);
-        int[] fieldSizes = new int[labels.size()];
-        Arrays.fill(fieldSizes, 7);
-        Utils.PrintTable(labels.size(), labels.toArray(new String[0]), params, fieldSizes);
+        // String[][] params = Utils.MapToMatrix(tableJump);
+        // int[] fieldSizes = new int[labels.size()];
+        // Arrays.fill(fieldSizes, 7);
+        // Utils.PrintTable(labels.size(), labels.toArray(new String[0]), params, fieldSizes);
+        List<List<String>> params = Utils.MapToMatrix(tableJump);
+        List<Integer> fieldSizes = new ArrayList<Integer>(Collections.nCopies(labels.size(), 7));
+        Utils.PrintTable(labels.size(), labels, params, fieldSizes);
 
         // TODO: (Со звездочкой) Вывести эпсилон замыкания
-        Map<Integer, List<Vertex>> eps = new HashMap<>();
-        for (Integer idx : tableJump.keySet()) {
-            Vertex start = vxs.get(idx);
-            List<Vertex> dst = new ArrayList<>(Arrays.asList(start));
+        // Map<Integer, List<Vertex>> eps = new HashMap<>();
+        // for (Integer idx : tableJump.keySet()) {
+        //     Vertex start = vxs.get(idx);
+        //     List<Vertex> dst = new ArrayList<>(Arrays.asList(start));
 
-            while(true) {
-                List<Vertex> jumps = tableJump.get(idx);
-                if (jumps.get(0) != null) {
-                    if ()
-                }
-            }
+        //     while(true) {
+        //         List<Vertex> jumps = tableJump.get(idx);
+        //         if (jumps.get(0) != null) {
+        //             if ()
+        //         }
+        //     }
 
-        }
+        // }
         // TODO: Детерминизация автомата и вывод таблицы состояний
 
 
