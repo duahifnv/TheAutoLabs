@@ -64,5 +64,7 @@ public class Program {
         int[] fieldSizes = new int[labels.size()];
         Arrays.fill(fieldSizes, 7);
         Utils.PrintTable(labels.size(), labels.toArray(new String[0]), params, fieldSizes);
+        // TODO: Детерминизация автомата и вывод таблицы состояний
+        // TODO: (Со звездочкой) Вывести эпсилон замыкания
     }
 }
