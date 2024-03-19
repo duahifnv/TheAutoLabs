@@ -1,22 +1,22 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class Determine {
+    private List<Character> alph;
     private List<Vertex> vertexes;
     private Map<Integer, List<List<Vertex>>> tableJump;
-    private Map<Integer, List<Vertex>> eps;
+    private List<State> epsStates;
 
-    public Determine(List<Vertex> vertexes, Map<Integer, List<List<Vertex>>> tableJump) {
+    public Determine(List<Vertex> vertexes, Map<Integer, List<List<Vertex>>> tableJump, List<Character> alph) {
         this.vertexes = vertexes;
         this.tableJump = tableJump;
+        this.alph = alph;
     }
-    public void CreateEps() {
-        Map<Integer, List<Vertex>> eps = new HashMap<>();
+    public List<State> CreateEps() {
+        List<State> epsStates = new ArrayList<>();
 
         for (Integer idx : tableJump.keySet()) {
             Vertex start = vertexes.get(idx);
@@ -27,14 +27,16 @@ public class Determine {
                     EpsVector(vertex, dst);
                 }
             }
-            eps.put(idx, dst);
+            State st = new State(idx, dst, "S" + idx.toString());
+            epsStates.add(st);
         }
-        this.eps = eps;
+        this.epsStates = epsStates;
+        return epsStates;
     }
     public void PrintEps() {
         System.out.println("E-переходы: ");
         for (int i = 0; i < vertexes.size(); i++) {
-            List<Vertex> dst = eps.get(i);
+            List<Vertex> dst = epsStates.get(i).getVertexs();
             List<String> formatDst = dst.stream().map(idx -> "q" + idx.getIdx()).collect(Collectors.toList());
             String stringDst = String.join(", ", formatDst);
             System.out.printf("~(q%d): {%s}%n", i, stringDst);
@@ -50,6 +52,29 @@ public class Determine {
             if (epsVxs == null) return;
             for (Vertex vertex : epsVxs) {
                 EpsVector(vertex, dst);
+            }
+        }
+        return;
+    }
+    // Рекурсивная функция прохождения по всем переходам
+    public void Vector(Vertex v, List<Vertex> dst, Integer letterIdx, Boolean gotLetter) {
+        Integer vIdx = v.getIdx();
+        List<Vertex> vEps = tableJump.get(0).get(vIdx);
+        List<Vertex> vLtr = tableJump.get(letterIdx).get(letterIdx);
+        // Прервалась цепочка
+        if (vEps == null && vLtr == null) {
+            if (gotLetter) dst.add(v);  // Буква в цепочке уже есть, добавляем цепочку с Е
+            return;
+        }
+        for (Vertex vertex : vEps) {
+            if (dst.contains(vertex)) continue;  // Избегаем зацикливания
+            Vector(vertex, dst, letterIdx, gotLetter);
+        }
+        if (!gotLetter) {
+            for (Vertex vertex : vLtr) {
+                if (dst.contains(vertex))
+                    continue;
+                Vector(v, dst, letterIdx, true);
             }
         }
         return;

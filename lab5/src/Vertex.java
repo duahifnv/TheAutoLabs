@@ -1,18 +1,17 @@
-public class Vertex {
+public class Vertex extends Idxable{
     private int idx;
-    private Boolean state;
-    // Start if state == false, End otherwise
-    public Vertex(int idx, Boolean state) {
+    private String state = "none";
+    public Vertex(int idx, String state) {
         this.idx = idx;
         this.state = state;
     }
-    public int getIdx() {
+    public Integer getIdx() {
         return idx;
     }
-    public Boolean getState() {
+    public String getState() {
         return state;
     }
-    public void setState(Boolean state) {
+    public void setState(String state) {
         this.state = state;
     }
 }

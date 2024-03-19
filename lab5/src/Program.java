@@ -38,11 +38,11 @@ public class Program {
         }
         for (Vertex vx : vxs) {
             int vx_idx = vx.getIdx();
-            if (endVxs.contains(vx_idx)) vx.setState(true);
-            if (startVxs.contains(vx_idx)) vx.setState(false);
+            if (endVxs.contains(vx_idx)) vx.setState("end");
+            if (startVxs.contains(vx_idx)) vx.setState("start");
         }
         // Ввод таблицы переходов
-        Map<Integer, List<List<Vertex>>> tableJump = new HashMap<>();
+        Map<Integer, List<List<Vertex>>> vertexJump = new HashMap<>();
         System.out.println("Введите переходы ('-1', чтобы закончить):");
         for (int i = 0; i < size; i++) {
             List<List<Vertex>> dst = new ArrayList<>();     // Ряд таблицы
@@ -59,7 +59,7 @@ public class Program {
                 if (cell.size() == 0) dst.add(null);
                 else dst.add(cell);
             }
-            tableJump.put(i, dst);
+            vertexJump.put(i, dst);
         }
         List<String> labels = new ArrayList<>(Arrays.asList("Вершина"));
         for (Character letter : alph) {
@@ -67,18 +67,50 @@ public class Program {
         }
 
         // Вывод таблицы переходов
-        List<List<String>> params = Utils.MapToMatrix(tableJump);
+        List<List<String>> params = Utils.MapToMatrix(vertexJump);
         List<Integer> fieldSizes = new ArrayList<Integer>(Collections.nCopies(labels.size(), 7));
         Utils.PrintTable(labels.size(), labels, params, fieldSizes);
 
         // Вывод эпсилон замыкания
-        Determine det = new Determine(vxs, tableJump);
-        det.CreateEps();
+        Determine det = new Determine(vxs, vertexJump, alph);
+        List<State> epsStates = det.CreateEps();
         det.PrintEps();
 
+        // TODO: Составление и вывод таблицы состояний на основе эпсилон-замыканий
+        Map<Integer, List<List<State>>> stateJump = new HashMap<>();    // Таблица состояний
+        // Составляем таблицу состояний
+        for (State state : epsStates) {     // Проходим состояния
+            List<List<State>> row = new ArrayList<>();  // Очередной ряд таблицы
+            System.out.print(state.getLabel() + ": "); // S0, S1, S2, ...
+            Integer idx = state.getIdx();
+            List<Vertex> values = state.getVertexs();           // Список вершин в состоянии
+            for (int i = 0; i < alph.size(); i++) {             // Проход всех букв
+                List<Vertex> dstList = new ArrayList<>();       // Список вершин, куда можно попасть по букве
+                for (Vertex value : values) {
+                    det.Vector(value, dstList, i + 1, false);
+                    // Вывод переходов
+                    for (Vertex dst : dstList) {
+                        System.out.printf("(q%d, %c) -> q%d%n", value.getIdx(), alph.get(i), dst.getIdx());
+                    }
+                }
+                // Смотрим какие состояния входят в наш новый список вершин
+                List<State> matchStates = new ArrayList<>();
+                for (State epState : epsStates) {
+                    if (dstList.contains(epState.getVertexs())) matchStates.add(epState);
+                }
+                row.add(matchStates);
+            }
+            stateJump.put(state.getIdx(), row);
+        }
+
+        // Вывод таблицы состояний
+        List<String> stLabels = new ArrayList<>(Arrays.asList("Состояние"));
+        for (Character letter : alph) {
+            stLabels.add(letter.toString());
+        }
+        List<List<String>> stParams = Utils.MapToMatrix(stateJump);
+        List<Integer> stFieldSizes = new ArrayList<Integer>(Collections.nCopies(labels.size(), 7));
+        Utils.PrintTable(stLabels.size(), stLabels, stParams, stFieldSizes);
         // TODO: Детерминизация автомата и вывод таблицы состояний
-
-
-
     }
 }
