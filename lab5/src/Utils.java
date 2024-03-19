@@ -25,20 +25,20 @@ public class Utils {
         }
     }
 
-    public static <T extends Idxable> List<List<String>> MapToMatrix(Map<Integer, List<List<T>>> map) {
+    public static <T extends Idxable> List<List<String>> MapToMatrix(Map<Integer, List<List<T>>> map, String prefix) {
         int n_rows = map.size();
         List<List<String>> params = new ArrayList<>();
         for (int i = 0; i < n_rows; i++) {
             List<List<T>> map_row = map.get(i);
             List<String> new_row = new ArrayList<>();
-            new_row.add("q" + String.valueOf(i));
+            new_row.add(prefix.charAt(0) + String.valueOf(i));
             for (int j = 0; j < map_row.size(); j++) {
                 String cell;
                 if (map_row.get(j) != null) {
                     List<T> values = map_row.get(j);
                     List<String> names = new ArrayList<>();
                     for (T obj : values) {
-                        names.add("q" + String.valueOf(obj.getIdx()));
+                        names.add(prefix.charAt(0) + String.valueOf(obj.getIdx()));
                     }
                     cell = String.join(",", names);
                 }

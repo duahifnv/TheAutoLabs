@@ -2,11 +2,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Program {
+    @SuppressWarnings("unlikely-arg-type")
     public static void main(String[] args) throws Exception {
         System.out.println("ТЕОРИЯ АВТОМАТОВ И ФОРМАЛЬНЫХ ЯЗЫКОВ\nЛабораторная работа #5");
         System.out.println("Детерминизация конечных автоматов");
@@ -30,10 +33,6 @@ public class Program {
                     "Введите конечную вершину", -1, 1, size - 1);
             startVxs = input.Set("Введите начальные вершины",
                     "Введите начальную вершину", -1, 1, size - 1);
-            // if (!(Collections.disjoint(endVxs, startVxs) && Collections.disjoint(startVxs, endVxs))) {
-            //     System.out.println("Вершины не могут быть и конечными и начальными");
-            // continue;
-            // }
             break;
         }
         for (Vertex vx : vxs) {
@@ -67,7 +66,7 @@ public class Program {
         }
 
         // Вывод таблицы переходов
-        List<List<String>> params = Utils.MapToMatrix(vertexJump);
+        List<List<String>> params = Utils.MapToMatrix(vertexJump, "q");
         List<Integer> fieldSizes = new ArrayList<Integer>(Collections.nCopies(labels.size(), 7));
         Utils.PrintTable(labels.size(), labels, params, fieldSizes);
 
@@ -76,7 +75,6 @@ public class Program {
         List<State> epsStates = det.CreateEps();
         det.PrintEps();
 
-        // TODO: Составление и вывод таблицы состояний на основе эпсилон-замыканий
         Map<Integer, List<List<State>>> stateJump = new HashMap<>();    // Таблица состояний
         // Составляем таблицу состояний
         for (State state : epsStates) {     // Проходим состояния
@@ -84,32 +82,48 @@ public class Program {
             System.out.print(state.getLabel() + ": "); // S0, S1, S2, ...
             Integer idx = state.getIdx();
             List<Vertex> values = state.getVertexs();           // Список вершин в состоянии
-            for (int i = 0; i < alph.size(); i++) {             // Проход всех букв
-                List<Vertex> dstList = new ArrayList<>();       // Список вершин, куда можно попасть по букве
+
+            for (int i = 1; i < alph.size(); i++) {             // Проход всех букв
+                Set<Vertex> dstList = new HashSet<>();          // Множество вершин, куда можно попасть по букве
+
                 for (Vertex value : values) {
-                    det.Vector(value, dstList, i + 1, false);
-                    // Вывод переходов
-                    for (Vertex dst : dstList) {
-                        System.out.printf("(q%d, %c) -> q%d%n", value.getIdx(), alph.get(i), dst.getIdx());
+                    Set<Vertex> dstPrev = new HashSet<>();
+                    dstPrev.addAll(dstList);
+                    det.Vector(value, dstList, i, false);
+                    // Вывод новых переходов
+                    for (Vertex vx : dstList) {
+                        if (!dstPrev.contains(vx)) {
+                            System.out.printf("(q%d, %c) -> q%d%n", value.getIdx(), alph.get(i), vx.getIdx());
+                        }
                     }
                 }
+                // Если по букве нет ни одного перехода
+                if (dstList.isEmpty()) System.out.printf("(%s, %c) -> NaN%n",
+                 values.stream().map(index -> "S" + index.getIdx()).collect(Collectors.toList()), alph.get(i));
                 // Смотрим какие состояния входят в наш новый список вершин
                 List<State> matchStates = new ArrayList<>();
                 for (State epState : epsStates) {
-                    if (dstList.contains(epState.getVertexs())) matchStates.add(epState);
+                    Boolean isNested = true;
+                    for (Vertex vx : epState.getVertexs()) {
+                        if (!dstList.contains(vx)) {
+                            isNested = false;
+                            break;
+                        }
+                    }
+                    if (isNested) matchStates.add(epState);
                 }
                 row.add(matchStates);
             }
-            stateJump.put(state.getIdx(), row);
+            stateJump.put(idx, row);
         }
 
         // Вывод таблицы состояний
         List<String> stLabels = new ArrayList<>(Arrays.asList("Состояние"));
-        for (Character letter : alph) {
-            stLabels.add(letter.toString());
+        for (int i = 1; i < alph.size(); i++) {
+            stLabels.add(alph.get(i).toString());
         }
-        List<List<String>> stParams = Utils.MapToMatrix(stateJump);
-        List<Integer> stFieldSizes = new ArrayList<Integer>(Collections.nCopies(labels.size(), 7));
+        List<List<String>> stParams = Utils.MapToMatrix(stateJump, "S");
+        List<Integer> stFieldSizes = new ArrayList<Integer>(Collections.nCopies(stLabels.size(), 10));
         Utils.PrintTable(stLabels.size(), stLabels, stParams, stFieldSizes);
         // TODO: Детерминизация автомата и вывод таблицы состояний
     }
