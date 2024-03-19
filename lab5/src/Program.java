@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Program {
-    @SuppressWarnings("unlikely-arg-type")
     public static void main(String[] args) throws Exception {
         System.out.println("ТЕОРИЯ АВТОМАТОВ И ФОРМАЛЬНЫХ ЯЗЫКОВ\nЛабораторная работа #5");
         System.out.println("Детерминизация конечных автоматов");
@@ -66,9 +65,7 @@ public class Program {
         }
 
         // Вывод таблицы переходов
-        List<List<String>> params = Utils.MapToMatrix(vertexJump, "q");
-        List<Integer> fieldSizes = new ArrayList<Integer>(Collections.nCopies(labels.size(), 7));
-        Utils.PrintTable(labels.size(), labels, params, fieldSizes);
+        Utils.PrintTableFromMap(vertexJump, labels, "q", 7);
 
         // Вывод эпсилон замыкания
         Determine det = new Determine(vxs, vertexJump, alph);
@@ -112,7 +109,8 @@ public class Program {
                     }
                     if (isNested) matchStates.add(epState);
                 }
-                row.add(matchStates);
+                if (matchStates.isEmpty()) row.add(null);
+                else row.add(matchStates);
             }
             stateJump.put(idx, row);
         }
@@ -122,9 +120,32 @@ public class Program {
         for (int i = 1; i < alph.size(); i++) {
             stLabels.add(alph.get(i).toString());
         }
-        List<List<String>> stParams = Utils.MapToMatrix(stateJump, "S");
-        List<Integer> stFieldSizes = new ArrayList<Integer>(Collections.nCopies(stLabels.size(), 10));
-        Utils.PrintTable(stLabels.size(), stLabels, stParams, stFieldSizes);
-        // TODO: Детерминизация автомата и вывод таблицы состояний
+        Utils.PrintTableFromMap(stateJump, stLabels, "S", 10);
+        // Начальное множество состояний
+        List<State> start = new ArrayList<>();
+        for (State state : epsStates) {
+            Boolean isStart = true;
+            for (Vertex vx : state.getVertexs()) {
+                // Есть хоть одна не начальная вершина - состояние не подходит
+                if (vx.getState() != "start") {
+                    isStart = false;
+                    break;
+                }
+            }
+            if (isStart) start.add(state);
+        }
+        Auto startA = new Auto(0, start, "P0");
+        Map<Auto, List<Auto>> autoJump = new HashMap<>(); // Таблица автомата
+        Set<Auto> autos = new HashSet<>(Arrays.asList(startA)); // Множество найденных
+        det.FindAutos(startA, autos, stateJump, autoJump);
+
+        List<String> autoLabels = new ArrayList<>(Arrays.asList("Множество"));
+        for (int i = 1; i < alph.size(); i++) {
+            autoLabels.add(alph.get(i).toString());
+        }
+
+        List<List<String>> autoParams = det.MapToMatrix(autoJump);
+        List<Integer> aFieldSizes = new ArrayList<Integer>(Collections.nCopies(autoLabels.size(), 10));
+        Utils.PrintTable(autoLabels.size(), autoLabels, autoParams, aFieldSizes);
     }
 }

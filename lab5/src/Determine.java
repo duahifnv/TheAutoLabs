@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,7 +11,6 @@ public class Determine {
     private List<Vertex> vertexes;
     private Map<Integer, List<List<Vertex>>> vertexJump;
     private List<State> epsStates;
-
     public Determine(List<Vertex> vertexes, Map<Integer, List<List<Vertex>>> vertexJump, List<Character> alph) {
         this.vertexes = vertexes;
         this.vertexJump = vertexJump;
@@ -80,5 +80,59 @@ public class Determine {
             }
         }
         return;
+    }
+    // Рекурсивная функция нахождения всех множеств состояний
+    public void FindAutos(Auto auto, Set<Auto> dst, Map<Integer,
+     List<List<State>>> stateJump, Map<Auto, List<Auto>> autoJump) {
+        List<Auto> jumps = new ArrayList<>();   // Список переходов на другие множества
+        // Проход по алфавиту без Е
+        for (int i = 1; i < alph.size(); i++) {
+            Set<Auto> uniqueJumps = new HashSet<>(); // Множество уникальных переходов по букве
+            for (State state : auto.getStates()) {
+                List<State> jump = stateJump.get(i - 1).get(state.getIdx());    // (S, w) -> {S}
+                if (jump == null) continue;
+                // Проверка на уже имеющееся множество
+                Boolean isNew = true;
+                for (Auto dstA : dst) {
+                    if (jump.equals(dstA.getStates())) {
+                        uniqueJumps.add(dstA);
+                        isNew = false;
+                        break;
+                    }
+                }
+                // Добавление нового множества
+                if (isNew) {
+                    Integer index = dst.size();
+                    String label = "P" + String.valueOf(index);
+                    Auto newA = new Auto(index, jump, label);
+                    dst.add(newA);
+                    uniqueJumps.add(newA);
+                    FindAutos(newA, dst, stateJump, autoJump);
+                }
+            }
+            jumps.addAll(uniqueJumps);
+        }
+        autoJump.put(auto, jumps);
+        return;
+    }
+
+    public List<List<String>> MapToMatrix(Map<Auto, List<Auto>> map) {
+        List<List<String>> params = new ArrayList<>();
+        List<Auto> labels = new ArrayList<>(map.keySet());
+
+        int n_rows = map.size();
+        for (int i = 0; i < n_rows; i++) {
+            List<String> new_row = new ArrayList<>();
+            Auto label = labels.get(i);
+            new_row.add(label.getLabel());
+
+            List<Auto> map_row = map.get(label);
+            for (int j = 0; j < map_row.size(); j++) {
+                String name = map_row.get(j).getLabel();
+                new_row.add(name);
+            }
+            params.add(new_row);
+        }
+        return params;
     }
 }

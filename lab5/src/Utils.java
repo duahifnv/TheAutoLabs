@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -48,5 +49,10 @@ public class Utils {
             params.add(new_row);
         }
         return params;
+    }
+    public static <T extends Idxable> void PrintTableFromMap(Map<Integer, List<List<T>>> map, List<String> labels, String prefix, Integer fieldSize) {
+        List<List<String>> params = Utils.MapToMatrix(map, prefix);
+        List<Integer> fieldSizes = new ArrayList<Integer>(Collections.nCopies(labels.size(), fieldSize));
+        Utils.PrintTable(labels.size(), labels, params, fieldSizes);
     }
 }
