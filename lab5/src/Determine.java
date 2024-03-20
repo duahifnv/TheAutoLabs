@@ -35,7 +35,7 @@ public class Determine {
         return epsStates;
     }
     public void PrintEps() {
-        System.out.println("E-переходы: ");
+        System.out.println("E-замыкания: ");
         for (int i = 0; i < vertexes.size(); i++) {
             List<Vertex> dst = epsStates.get(i).getVertexs();
             List<String> formatDst = dst.stream().map(idx -> "q" + idx.getIdx()).collect(Collectors.toList());
@@ -43,7 +43,7 @@ public class Determine {
             System.out.printf("~(q%d): {%s}%n", i, stringDst);
         }
     }
-    // Рекурсивная функция прохождения по эпсилон переходам
+    // Рекурсивный метод прохождения по эпсилон переходам
     private void EpsVector(Vertex v, List<Vertex> dst) {
         List<Vertex> epsVxs;
         if (!dst.contains(v)) {
@@ -57,7 +57,7 @@ public class Determine {
         }
         return;
     }
-    // Рекурсивная функция прохождения по всем переходам
+    // Рекурсивный метод прохождения по всем переходам
     public void Vector(Vertex v, Set<Vertex> dst, Integer letterIdx, Boolean gotLetter) {
         if (gotLetter) dst.add(v);  // Буква в цепочке уже есть
         Integer vIdx = v.getIdx();
@@ -81,7 +81,7 @@ public class Determine {
         }
         return;
     }
-    // Рекурсивная функция нахождения всех множеств состояний
+    // Рекурсивный метод нахождения всех множеств состояний
     public void FindAutos(Auto auto, Set<Auto> dst, Map<Integer,
      List<List<State>>> stateJump, Map<Auto, List<Auto>> autoJump) {
         List<Auto> jumps = new ArrayList<>();   // Список переходов на другие множества
@@ -110,20 +110,24 @@ public class Determine {
                     FindAutos(newA, dst, stateJump, autoJump);
                 }
             }
+            if (uniqueJumps.size() == 0) uniqueJumps = null;
             jumps.addAll(uniqueJumps);
         }
         autoJump.put(auto, jumps);
         return;
     }
 
-    public List<List<String>> MapToMatrix(Map<Auto, List<Auto>> map) {
+    // Метод превращения ассоциативного двумерного списка в двумерную матрицу
+    public List<List<String>> MapToMatrix(Map<Auto, List<Auto>> map, Boolean reversed) {
         List<List<String>> params = new ArrayList<>();
         List<Auto> labels = new ArrayList<>(map.keySet());
 
         int n_rows = map.size();
         for (int i = 0; i < n_rows; i++) {
             List<String> new_row = new ArrayList<>();
-            Auto label = labels.get(i);
+            Auto label;
+            if (reversed) label = labels.get(n_rows - i - 1);
+            else label = labels.get(i);
             new_row.add(label.getLabel());
 
             List<Auto> map_row = map.get(label);
@@ -134,5 +138,26 @@ public class Determine {
             params.add(new_row);
         }
         return params;
+    }
+
+    // Метод проверки слова на соответствие автомату
+    public Boolean CheckWord(String word, Auto startAuto, Map<Auto, List<Auto>> autoJump) {
+        String copyWord = word;
+        Boolean isValid = true;
+        CheckWordVector(copyWord, startAuto, autoJump, isValid);
+        return isValid;
+    }
+    // Рекурсия метода проверки слова на соответствие автомату
+    public void CheckWordVector(String word, Auto currentAuto, Map<Auto, List<Auto>> autoJump, Boolean isValid) {
+        if (word.length() == 0) return;
+        Character currentLetter = word.charAt(0);
+        Integer letterIdx = alph.indexOf(currentLetter);
+        Auto jump = autoJump.get(currentAuto).get(letterIdx);
+        if (jump == null) {
+            isValid = false;
+            return;
+        }
+        String newWord = word.substring(1);
+        CheckWordVector(newWord, jump, autoJump, true);
     }
 }

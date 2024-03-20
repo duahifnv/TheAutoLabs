@@ -1,3 +1,4 @@
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,7 +28,7 @@ public class Program {
         }
         // Расставляем конечные и начальные вершины
         Set<Integer> endVxs, startVxs;
-        while(true) {
+        while (true) {
             endVxs = input.Set("Введите конечные вершины",
                     "Введите конечную вершину", -1, 1, size - 1);
             startVxs = input.Set("Введите начальные вершины",
@@ -36,26 +37,32 @@ public class Program {
         }
         for (Vertex vx : vxs) {
             int vx_idx = vx.getIdx();
-            if (endVxs.contains(vx_idx)) vx.setState("end");
-            if (startVxs.contains(vx_idx)) vx.setState("start");
+            if (endVxs.contains(vx_idx))
+                vx.setState("end");
+            if (startVxs.contains(vx_idx))
+                vx.setState("start");
         }
         // Ввод таблицы переходов
         Map<Integer, List<List<Vertex>>> vertexJump = new HashMap<>();
         System.out.println("Введите переходы ('-1', чтобы закончить):");
         for (int i = 0; i < size; i++) {
-            List<List<Vertex>> dst = new ArrayList<>();     // Ряд таблицы
+            List<List<Vertex>> dst = new ArrayList<>(); // Ряд таблицы
             for (int j = 0; j < alph.size(); j++) {
-                List<Vertex> cell = new ArrayList<>();      // Ячейка с вершинами
+                List<Vertex> cell = new ArrayList<>(); // Ячейка с вершинами
                 String comm = String.format("Введите переходы из q%d по %s: ",
-                 i, alph.get(j));
+                        i, alph.get(j));
                 while (true) {
                     int idx = input.Size(comm, -1, size - 1);
-                    if (idx == -1) break;
-                    if (cell.contains(vxs.get(idx))) continue;
+                    if (idx == -1)
+                        break;
+                    if (cell.contains(vxs.get(idx)))
+                        continue;
                     cell.add(vxs.get(idx));
                 }
-                if (cell.size() == 0) dst.add(null);
-                else dst.add(cell);
+                if (cell.size() == 0)
+                    dst.add(null);
+                else
+                    dst.add(cell);
             }
             vertexJump.put(i, dst);
         }
@@ -72,16 +79,16 @@ public class Program {
         List<State> epsStates = det.CreateEps();
         det.PrintEps();
 
-        Map<Integer, List<List<State>>> stateJump = new HashMap<>();    // Таблица состояний
+        Map<Integer, List<List<State>>> stateJump = new HashMap<>(); // Таблица состояний
         // Составляем таблицу состояний
-        for (State state : epsStates) {     // Проходим состояния
-            List<List<State>> row = new ArrayList<>();  // Очередной ряд таблицы
+        for (State state : epsStates) { // Проходим состояния
+            List<List<State>> row = new ArrayList<>(); // Очередной ряд таблицы
             System.out.print(state.getLabel() + ": "); // S0, S1, S2, ...
             Integer idx = state.getIdx();
-            List<Vertex> values = state.getVertexs();           // Список вершин в состоянии
+            List<Vertex> values = state.getVertexs(); // Список вершин в состоянии
 
-            for (int i = 1; i < alph.size(); i++) {             // Проход всех букв
-                Set<Vertex> dstList = new HashSet<>();          // Множество вершин, куда можно попасть по букве
+            for (int i = 1; i < alph.size(); i++) { // Проход всех букв
+                Set<Vertex> dstList = new HashSet<>(); // Множество вершин, куда можно попасть по букве
 
                 for (Vertex value : values) {
                     Set<Vertex> dstPrev = new HashSet<>();
@@ -95,8 +102,10 @@ public class Program {
                     }
                 }
                 // Если по букве нет ни одного перехода
-                if (dstList.isEmpty()) System.out.printf("(%s, %c) -> NaN%n",
-                 values.stream().map(index -> "q" + index.getIdx()).collect(Collectors.toList()), alph.get(i));
+                if (dstList.isEmpty())
+                    System.out.printf("(%s, %c) -> NaN%n",
+                            values.stream().map(index -> "q" + index.getIdx()).collect(Collectors.toList()),
+                            alph.get(i));
                 // Смотрим какие состояния входят в наш новый список вершин
                 List<State> matchStates = new ArrayList<>();
                 for (State epState : epsStates) {
@@ -107,10 +116,13 @@ public class Program {
                             break;
                         }
                     }
-                    if (isNested) matchStates.add(epState);
+                    if (isNested)
+                        matchStates.add(epState);
                 }
-                if (matchStates.isEmpty()) row.add(null);
-                else row.add(matchStates);
+                if (matchStates.isEmpty())
+                    row.add(null);
+                else
+                    row.add(matchStates);
             }
             stateJump.put(idx, row);
         }
@@ -132,7 +144,8 @@ public class Program {
                     break;
                 }
             }
-            if (isStart) start.add(state);
+            if (isStart)
+                start.add(state);
         }
         Auto startA = new Auto(0, start, "P0");
         List<String> startContainer = new ArrayList<>();
@@ -149,11 +162,19 @@ public class Program {
             autoLabels.add(alph.get(i).toString());
         }
 
-        List<List<String>> autoParams = det.MapToMatrix(autoJump);
+        List<List<String>> autoParams = det.MapToMatrix(autoJump, true);
         List<Integer> aFieldSizes = new ArrayList<Integer>(Collections.nCopies(autoLabels.size(), 10));
         Utils.PrintTable(autoLabels.size(), autoLabels, autoParams,
-         "Таблица множеств состояний", aFieldSizes);
+                "Таблица множеств состояний", aFieldSizes);
 
-        // TODO: Проверить соотвествие введенного пользователем слова построенному автомату
+        Input wordInput = new Input();
+        while (true) {
+            String word = wordInput.Stroke("Введите слово (exit для выхода)", alph);
+            if (word == "exit")
+                break;
+            Boolean isValid = det.CheckWord(word, startA, autoJump);
+            String validMsg = (isValid) ? "Слово соответствует автомату" : "Слово не соответствует автомату";
+            System.out.println(validMsg);
+        }
     }
 }
