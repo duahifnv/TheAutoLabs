@@ -89,7 +89,7 @@ public class Determine {
         for (int i = 1; i < alph.size(); i++) {
             Set<Auto> uniqueJumps = new HashSet<>(); // Множество уникальных переходов по букве
             for (State state : auto.getStates()) {
-                List<State> jump = stateJump.get(i - 1).get(state.getIdx());    // (S, w) -> {S}
+                List<State> jump = stateJump.get(state.getIdx()).get(i - 1);    // (S, w) -> {S}
                 if (jump == null) continue;
                 // Проверка на уже имеющееся множество
                 Boolean isNew = true;

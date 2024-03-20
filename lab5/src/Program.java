@@ -65,7 +65,7 @@ public class Program {
         }
 
         // Вывод таблицы переходов
-        Utils.PrintTableFromMap(vertexJump, labels, "q", 7);
+        Utils.PrintTableFromMap(vertexJump, labels, "q", "Таблица переходов", 7);
 
         // Вывод эпсилон замыкания
         Determine det = new Determine(vxs, vertexJump, alph);
@@ -96,7 +96,7 @@ public class Program {
                 }
                 // Если по букве нет ни одного перехода
                 if (dstList.isEmpty()) System.out.printf("(%s, %c) -> NaN%n",
-                 values.stream().map(index -> "S" + index.getIdx()).collect(Collectors.toList()), alph.get(i));
+                 values.stream().map(index -> "q" + index.getIdx()).collect(Collectors.toList()), alph.get(i));
                 // Смотрим какие состояния входят в наш новый список вершин
                 List<State> matchStates = new ArrayList<>();
                 for (State epState : epsStates) {
@@ -120,7 +120,7 @@ public class Program {
         for (int i = 1; i < alph.size(); i++) {
             stLabels.add(alph.get(i).toString());
         }
-        Utils.PrintTableFromMap(stateJump, stLabels, "S", 10);
+        Utils.PrintTableFromMap(stateJump, stLabels, "S", "Таблица состояний", 10);
         // Начальное множество состояний
         List<State> start = new ArrayList<>();
         for (State state : epsStates) {
@@ -135,6 +135,11 @@ public class Program {
             if (isStart) start.add(state);
         }
         Auto startA = new Auto(0, start, "P0");
+        List<String> startContainer = new ArrayList<>();
+        for (State state : start) {
+            startContainer.add(state.getLabel());
+        }
+        System.out.printf("Начальное множество: %s -> {%s}%n", startA.getLabel(), String.join(", ", startContainer));
         Map<Auto, List<Auto>> autoJump = new HashMap<>(); // Таблица автомата
         Set<Auto> autos = new HashSet<>(Arrays.asList(startA)); // Множество найденных
         det.FindAutos(startA, autos, stateJump, autoJump);
@@ -146,6 +151,9 @@ public class Program {
 
         List<List<String>> autoParams = det.MapToMatrix(autoJump);
         List<Integer> aFieldSizes = new ArrayList<Integer>(Collections.nCopies(autoLabels.size(), 10));
-        Utils.PrintTable(autoLabels.size(), autoLabels, autoParams, aFieldSizes);
+        Utils.PrintTable(autoLabels.size(), autoLabels, autoParams,
+         "Таблица множеств состояний", aFieldSizes);
+
+        // TODO: Проверить соотвествие введенного пользователем слова построенному автомату
     }
 }

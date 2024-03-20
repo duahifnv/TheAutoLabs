@@ -5,25 +5,36 @@ import java.util.Map;
 
 public class Utils {
     public static void PrintTable(int n_columns, List<String> labels,
-     List<List<String>> params, List<Integer> fieldSizes) {
+     List<List<String>> params, String title, List<Integer> fieldSizes) {
+        System.out.println(title);
         if (labels.size() != n_columns || params.get(0).size() != n_columns || fieldSizes.size() != n_columns) {
             System.out.println("Количество столбцов не совпадает с количеством параметров");
             return;
         }
+        String dashStroke = "";
+        for (Integer size : fieldSizes) {
+            dashStroke += "-".repeat(size);
+            dashStroke += "+";
+        }
+        // Заголовки
+        System.out.println(dashStroke);
         for (int i = 0; i < n_columns; i++) {
             String format = "%-" + fieldSizes.get(i % n_columns) + "s";
             System.out.printf(format, labels.get(i));
-            System.out.print(" | ");
+            System.out.print("|");
         }
         System.out.println();
+        // Значения
+        System.out.println(dashStroke);
         for (int i = 0; i < params.size(); i++) {
             for (int j = 0; j < n_columns; j++) {
                 String format = "%-" + fieldSizes.get(j % n_columns) + "s";
                 System.out.printf(format, params.get(i).get(j));
-                System.out.print(" | ");
+                System.out.print("|");
             }
             System.out.println();
         }
+        System.out.println(dashStroke);
     }
 
     public static <T extends Idxable> List<List<String>> MapToMatrix(Map<Integer, List<List<T>>> map, String prefix) {
@@ -50,9 +61,9 @@ public class Utils {
         }
         return params;
     }
-    public static <T extends Idxable> void PrintTableFromMap(Map<Integer, List<List<T>>> map, List<String> labels, String prefix, Integer fieldSize) {
+    public static <T extends Idxable> void PrintTableFromMap(Map<Integer, List<List<T>>> map, List<String> labels, String prefix, String title, Integer fieldSize) {
         List<List<String>> params = Utils.MapToMatrix(map, prefix);
         List<Integer> fieldSizes = new ArrayList<Integer>(Collections.nCopies(labels.size(), fieldSize));
-        Utils.PrintTable(labels.size(), labels, params, fieldSizes);
+        Utils.PrintTable(labels.size(), labels, params, title, fieldSizes);
     }
 }
