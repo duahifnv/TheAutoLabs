@@ -1,7 +1,9 @@
 import java.util.List;
+import java.util.Scanner;
 import java.util.ArrayList;
 
-public class Alphabet extends Input{
+public class Alphabet {
+    Scanner scan = new Scanner(System.in);
     private List<Character> alph = new ArrayList<Character>();
     private char CharInput(String commentary) {
         String ch_input;

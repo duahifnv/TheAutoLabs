@@ -4,8 +4,11 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class Input {
-    private String exitWord = "exit";
+    private String exitWord;
     protected Scanner scan = new Scanner(System.in);
+    public Input(String exitWord) {
+        this.exitWord = exitWord;
+    }
     public int Size(String comm, int min, int max) {
         int input;
         while(true) {
@@ -43,11 +46,11 @@ public class Input {
         return set;
     }
     public String Stroke(String comm, List<Character> alph) {
-        System.out.print(comm + ": ");
         String stroke = new String();
         while(true) {
+            System.out.print(comm + ": ");
             stroke = scan.nextLine();
-            if (stroke == exitWord) break;
+            if (stroke.equals(exitWord)) break;
             Boolean isValid = true;
             for (Character ch : stroke.toCharArray()) {
                 if (!alph.contains(ch)) {

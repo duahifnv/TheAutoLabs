@@ -18,7 +18,7 @@ public class Program {
         a.SetAlph(true);
         List<Character> alph = a.GetAlph();
         // Размер графа
-        Input input = new Input();
+        Input input = new Input("exit");
         int size = input.Size("Введите число вершин: ", 2, 10);
         // Массив вершин
         List<Vertex> vxs = new ArrayList<>();
@@ -167,11 +167,10 @@ public class Program {
         Utils.PrintTable(autoLabels.size(), autoLabels, autoParams,
                 "Таблица множеств состояний", aFieldSizes);
 
-        Input wordInput = new Input();
+        Input wordInput = new Input("exit");
         while (true) {
             String word = wordInput.Stroke("Введите слово (exit для выхода)", alph);
-            if (word == "exit")
-                break;
+            if (word.equals("exit")) break;
             Boolean isValid = det.CheckWord(word, startA, autoJump);
             String validMsg = (isValid) ? "Слово соответствует автомату" : "Слово не соответствует автомату";
             System.out.println(validMsg);
