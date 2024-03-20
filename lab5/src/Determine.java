@@ -151,7 +151,7 @@ public class Determine {
     public void CheckWordVector(String word, Auto currentAuto, Map<Auto, List<Auto>> autoJump, Boolean isValid) {
         if (word.length() == 0) return;
         Character currentLetter = word.charAt(0);
-        Integer letterIdx = alph.indexOf(currentLetter);
+        Integer letterIdx = alph.indexOf(currentLetter) - 1;
         Auto jump = autoJump.get(currentAuto).get(letterIdx);
         if (jump == null) {
             isValid = false;
