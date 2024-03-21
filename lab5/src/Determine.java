@@ -28,7 +28,26 @@ public class Determine {
                     EpsVector(vertex, dst);
                 }
             }
-            State st = new State(idx, dst, "S" + idx.toString());
+            Boolean isEndState = true;
+            Boolean isStartState = true;
+            String state = "none";
+            for (Vertex vx : dst) {
+                if (vx.getState() != "end") {
+                    isEndState = false;
+                    break;
+                }
+            }
+            if (!isEndState) {
+                for (Vertex vx : dst) {
+                    if (vx.getState() != "start") {
+                        isStartState = false;
+                        break;
+                    }
+                }
+            }
+            if (isEndState) state = "end";
+            else if (isStartState) state = "start";
+            State st = new State(idx, dst, "S" + idx.toString(), state);
             epsStates.add(st);
         }
         this.epsStates = epsStates;
@@ -104,14 +123,24 @@ public class Determine {
                 if (isNew) {
                     Integer index = dst.size();
                     String label = "P" + String.valueOf(index);
-                    Auto newA = new Auto(index, jump, label);
+                    Boolean endAuto = true;
+
+                    String endAutoState = "none";
+                    for (State st : jump) {
+                        if (st.getState() != "end") {
+                            endAuto = false;
+                            break;
+                        }
+                    }
+                    if (endAuto) endAutoState = "end";
+                    Auto newA = new Auto(index, jump, label, endAutoState);
                     dst.add(newA);
                     uniqueJumps.add(newA);
                     FindAutos(newA, dst, stateJump, autoJump);
                 }
             }
-            if (uniqueJumps.size() == 0) uniqueJumps = null;
-            jumps.addAll(uniqueJumps);
+            if (uniqueJumps.size() == 0) jumps.add(null);
+            else jumps.addAll(uniqueJumps);
         }
         autoJump.put(auto, jumps);
         return;
@@ -132,7 +161,9 @@ public class Determine {
 
             List<Auto> map_row = map.get(label);
             for (int j = 0; j < map_row.size(); j++) {
-                String name = map_row.get(j).getLabel();
+                String name = new String();
+                if (map_row.get(j) == null) name = "-";
+                else name = map_row.get(j).getLabel();
                 new_row.add(name);
             }
             params.add(new_row);
@@ -144,20 +175,22 @@ public class Determine {
     public Boolean CheckWord(String word, Auto startAuto, Map<Auto, List<Auto>> autoJump) {
         String copyWord = word;
         Boolean isValid = true;
-        CheckWordVector(copyWord, startAuto, autoJump, isValid);
+        isValid = CheckWordVector(copyWord, startAuto, autoJump);
         return isValid;
     }
     // Рекурсия метода проверки слова на соответствие автомату
-    public void CheckWordVector(String word, Auto currentAuto, Map<Auto, List<Auto>> autoJump, Boolean isValid) {
-        if (word.length() == 0) return;
-        Character currentLetter = word.charAt(0);
-        Integer letterIdx = alph.indexOf(currentLetter) - 1;
-        Auto jump = autoJump.get(currentAuto).get(letterIdx);
-        if (jump == null) {
-            isValid = false;
-            return;
+    public Boolean CheckWordVector(String word, Auto currentAuto, Map<Auto, List<Auto>> autoJump) {
+        if (word.length() != 0) {
+            Character currentLetter = word.charAt(0);
+            Integer letterIdx = alph.indexOf(currentLetter) - 1;
+            Auto jump = autoJump.get(currentAuto).get(letterIdx);
+            if (jump == null) {
+                return false;
+            }
+            String newWord = word.substring(1);
+            return CheckWordVector(newWord, jump, autoJump);
         }
-        String newWord = word.substring(1);
-        CheckWordVector(newWord, jump, autoJump, true);
+        if (currentAuto.getState() != "end") return false;
+        else return true;
     }
 }

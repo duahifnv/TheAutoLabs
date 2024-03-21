@@ -144,10 +144,9 @@ public class Program {
                     break;
                 }
             }
-            if (isStart)
-                start.add(state);
+            if (isStart) start.add(state);
         }
-        Auto startA = new Auto(0, start, "P0");
+        Auto startA = new Auto(0, start, "P0", "start");
         List<String> startContainer = new ArrayList<>();
         for (State state : start) {
             startContainer.add(state.getLabel());

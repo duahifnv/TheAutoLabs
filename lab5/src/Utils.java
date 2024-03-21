@@ -7,7 +7,7 @@ public class Utils {
     public static void PrintTable(int n_columns, List<String> labels,
      List<List<String>> params, String title, List<Integer> fieldSizes) {
         System.out.println(title);
-        if (labels.size() != n_columns || params.get(0).size() != n_columns || fieldSizes.size() != n_columns) {
+        if (labels.size() != n_columns || fieldSizes.size() != n_columns) {
             System.out.println("Количество столбцов не совпадает с количеством параметров");
             return;
         }

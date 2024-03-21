@@ -6,10 +6,12 @@ public class State extends Idxable {
     private Integer idx;
     private List<Vertex> vxs;
     private String label = "S?";
-    public State(Integer idx, List<Vertex> vxs, String label) {
+    private String state = "none";
+    public State(Integer idx, List<Vertex> vxs, String label, String state) {
         this.idx = idx;
         this.vxs = vxs;
         this.label = label;
+        this.state = state;
     }
     public State(Integer idx, List<Vertex> vxs) {
         this.idx = idx;
@@ -23,5 +25,8 @@ public class State extends Idxable {
     }
     public String getLabel() {
         return label;
+    }
+    public String getState() {
+        return state;
     }
 }
