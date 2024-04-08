@@ -8,15 +8,29 @@ import auto.*;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
+        // Статические данные
+        int size = 3;
+        List<Character> alph = new ArrayList<>() {{
+            add('E');
+            add('a');
+            add('b');
+        }};
+        Set<Integer> endVxs = new HashSet<>(){{
+            add(2);
+        }};
+        Set<Integer> startVxs = new HashSet<>(){{
+            add(0);
+            add(2);
+        }};
         System.out.println("ТЕОРИЯ АВТОМАТОВ И ФОРМАЛЬНЫХ ЯЗЫКОВ\nЛабораторная работа #5");
         System.out.println("Детерминизация конечных автоматов");
         // Получаем алфавит входных символов
         Alphabet a = new Alphabet();
-        a.SetAlph(true);
-        List<Character> alph = a.GetAlph();
+        // a.SetAlph(true);
+        // List<Character> alph = a.GetAlph();
         // Размер графа
         Input input = new Input("exit");
-        int size = input.Size("Введите число вершин: ", 2, 10);
+        // int size = input.Size("Введите число вершин: ", 2, 10);
         // Массив вершин
         List<Vertex> vxs = new ArrayList<>();
         for (int i = 0; i < size; i++) {
@@ -24,14 +38,14 @@ public class Main {
             vxs.add(vx);
         }
         // Расставляем конечные и начальные вершины
-        Set<Integer> endVxs, startVxs;
+        /*Set<Integer> endVxs, startVxs;
         while (true) {
             endVxs = input.Set("Введите конечные вершины",
                     "Введите конечную вершину", -1, 1, size - 1);
             startVxs = input.Set("Введите начальные вершины",
                     "Введите начальную вершину", -1, 1, size - 1);
             break;
-        }
+        }*/
         for (Vertex vx : vxs) {
             int vx_idx = vx.getIdx();
             if (endVxs.contains(vx_idx))
@@ -152,7 +166,10 @@ public class Main {
         Map<Auto, List<Auto>> autoJump = new HashMap<>(); // Таблица автомата
         Set<Auto> autos = new HashSet<>(Arrays.asList(startA)); // Множество найденных
         det.FindAutos(startA, autos, stateJump, autoJump);
-
+        if (!det.isHasEndAuto()) {
+            Auto lastAuto = (Auto) autoJump.keySet().toArray()[autoJump.size() - 1];
+            lastAuto.setState("end");
+        }
         List<String> autoLabels = new ArrayList<>(Arrays.asList("Множество"));
         for (int i = 1; i < alph.size(); i++) {
             autoLabels.add(alph.get(i).toString());
