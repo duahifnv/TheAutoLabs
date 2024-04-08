@@ -48,7 +48,7 @@ public class Input {
         return set;
     }
     public String Stroke(String comm, List<Character> alph) {
-        String stroke = new String();
+        String stroke;
         while(true) {
             System.out.print(comm + ": ");
             stroke = scan.nextLine();
@@ -57,6 +57,11 @@ public class Input {
             for (Character ch : stroke.toCharArray()) {
                 if (!alph.contains(ch)) {
                     System.out.println("В введенном слове есть символы не из алфавита");
+                    isValid = false;
+                    break;
+                }
+                if (ch == 'E') {
+                    System.out.println("Буква Е зарезервирована под эпсилон переход");
                     isValid = false;
                     break;
                 }
