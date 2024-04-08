@@ -1,20 +1,13 @@
 package auto;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Класс минимизации конечного автомата
  */
 public class Minimize {
-    private final Map<Auto, List<Auto>> automata;
-    private final List<Character> alph;
-    public Minimize(Map<Auto, List<Auto>> automata, List<Character> alph) {
-        this.automata = automata;
-        this.alph = alph;
-    }
     /** Поиск классов эквиваленции */
-    public void findClasses() {
+    private static List<List<Auto>> findClasses(Map<Auto, List<Auto>> automata, List<Character> alph) {
         List<List<Auto>> classes = new ArrayList<>() {{
             add(new ArrayList<>());
             add(new ArrayList<>());
@@ -57,7 +50,7 @@ public class Minimize {
                     break;
                 }
                 if (!gotSlice) {
-                    classes.remove(clazz);; // Удаляем класс из неразбитых классов
+                    classes.remove(clazz); // Удаляем класс из неразбитых классов
                     if (classes.size() == 0) break;
                     finalClasses.add(clazz); // Добавляем класс в финальный список
                 }
@@ -65,9 +58,33 @@ public class Minimize {
         }
         System.out.println("Классы эквивалентности:");
         for(List<Auto> clazz : finalClasses) {
-            List<String> values = clazz.stream().map(x -> "q" + x.getIdx().toString()).toList();
+            List<String> values = clazz.stream().map(x -> "P" + x.getIdx().toString()).toList();
             String format = String.join(",", values);
-            System.out.println("[" + format + "]");
+            System.out.println("$[" + format + "]");
+        }
+        return finalClasses;
+    }
+    public static void minimize(Map<Auto, List<Auto>> automata, List<Character> alph) {
+        // Находим класс эквивалентности
+        List<List<Auto>> classes = findClasses(automata, alph);
+        // Из них находим те, в которых больше одного элемента
+        List<List<Auto>> multiClasses = classes.stream().filter(x -> x.size() > 1).toList();
+        if (multiClasses.size() == 0) {
+            System.out.println("Исходный автомат уже минимален");
+            return;
+        }
+        for (List<Auto> clazz : multiClasses) {
+            Auto first = clazz.get(0);
+            List<Auto> row = new ArrayList<>();
+            // Переходы на эквивалентные элементы заменяем первым элементом
+            for (int i = 0; i < alph.size(); i++) {
+                Auto jump = automata.get(first).get(i);
+                if (clazz.contains(jump)) {
+                    row.add(first);
+                }
+                else row.add(jump);
+            }
+            automata.put(first, row);
         }
     }
 }
