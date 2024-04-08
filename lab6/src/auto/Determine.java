@@ -148,7 +148,7 @@ public class Determine {
     }
 
     // Метод превращения ассоциативного двумерного списка в двумерную матрицу
-    public List<List<String>> MapToMatrix(Map<Auto, List<Auto>> map, Boolean reversed) {
+    public static List<List<String>> MapToMatrix(Map<Auto, List<Auto>> map, Boolean reversed) {
         List<List<String>> params = new ArrayList<>();
         List<Auto> labels = new ArrayList<>(map.keySet());
 
@@ -196,5 +196,11 @@ public class Determine {
     }
     public boolean isHasEndAuto() {
         return hasEndAuto;
+    }
+    public static void BuildTable(List<String> autoLabels, Map<Auto, List<Auto>> autoJump, String title) {
+        List<List<String>> autoParams = Determine.MapToMatrix(autoJump, true);
+        List<Integer> aFieldSizes = new ArrayList<Integer>(Collections.nCopies(autoLabels.size(), 10));
+        Utils.PrintTable(autoLabels.size(), autoLabels, autoParams,
+                title, aFieldSizes);
     }
 }
