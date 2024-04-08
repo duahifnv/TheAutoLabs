@@ -10,6 +10,7 @@ public class Determine {
     private List<Vertex> vertexes;
     private Map<Integer, List<List<Vertex>>> vertexJump;
     private List<State> epsStates;
+    private boolean hasEndAuto = false;
     public Determine(List<Vertex> vertexes, Map<Integer, List<List<Vertex>>> vertexJump, List<Character> alph) {
         this.vertexes = vertexes;
         this.vertexJump = vertexJump;
@@ -110,7 +111,7 @@ public class Determine {
                 List<State> jump = stateJump.get(state.getIdx()).get(i - 1);    // (S, w) -> {S}
                 if (jump == null) continue;
                 // Проверка на уже имеющееся множество
-                Boolean isNew = true;
+                boolean isNew = true;
                 for (Auto dstA : dst) {
                     if (jump.equals(dstA.getStates())) {
                         uniqueJumps.add(dstA);
@@ -121,17 +122,20 @@ public class Determine {
                 // Добавление нового множества
                 if (isNew) {
                     Integer index = dst.size();
-                    String label = "P" + String.valueOf(index);
-                    Boolean endAuto = true;
+                    String label = "P" + index;
+                    boolean endAuto = true;
 
                     String endAutoState = "none";
                     for (State st : jump) {
-                        if (st.getState() != "end") {
+                        if (!Objects.equals(st.getState(), "end")) {
                             endAuto = false;
                             break;
                         }
                     }
-                    if (endAuto) endAutoState = "end";
+                    if (endAuto) {
+                        endAutoState = "end";
+                        this.hasEndAuto = true;
+                    }
                     Auto newA = new Auto(index, jump, label, endAutoState);
                     dst.add(newA);
                     uniqueJumps.add(newA);
@@ -142,7 +146,6 @@ public class Determine {
             else jumps.addAll(uniqueJumps);
         }
         autoJump.put(auto, jumps);
-        return;
     }
 
     // Метод превращения ассоциативного двумерного списка в двумерную матрицу
@@ -160,7 +163,7 @@ public class Determine {
 
             List<Auto> map_row = map.get(label);
             for (int j = 0; j < map_row.size(); j++) {
-                String name = new String();
+                String name;
                 if (map_row.get(j) == null) name = "-";
                 else name = map_row.get(j).getLabel();
                 new_row.add(name);
@@ -191,5 +194,8 @@ public class Determine {
         }
         if (currentAuto.getState() != "end") return false;
         else return true;
+    }
+    public boolean isHasEndAuto() {
+        return hasEndAuto;
     }
 }
