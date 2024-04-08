@@ -58,33 +58,34 @@ public class Minimize {
         }
         System.out.println("Классы эквивалентности:");
         for(List<Auto> clazz : finalClasses) {
-            List<String> values = clazz.stream().map(x -> "P" + x.getIdx().toString()).toList();
+            List<String> values = clazz.stream().map(x -> "q" + x.getIdx().toString()).toList();
             String format = String.join(",", values);
             System.out.println("$[" + format + "]");
         }
         return finalClasses;
     }
-    public static void minimize(Map<Auto, List<Auto>> automata, List<Character> alph) {
+    public static boolean minimize(Map<Auto, List<Auto>> automata, List<Character> alph) {
         // Находим класс эквивалентности
         List<List<Auto>> classes = findClasses(automata, alph);
         // Из них находим те, в которых больше одного элемента
         List<List<Auto>> multiClasses = classes.stream().filter(x -> x.size() > 1).toList();
         if (multiClasses.size() == 0) {
-            System.out.println("Исходный автомат уже минимален");
-            return;
+            return false;
         }
         for (List<Auto> clazz : multiClasses) {
             Auto first = clazz.get(0);
             List<Auto> row = new ArrayList<>();
             // Переходы на эквивалентные элементы заменяем первым элементом
-            for (int i = 0; i < alph.size(); i++) {
+            for (int i = 0; i < alph.size() - 1; i++) {
                 Auto jump = automata.get(first).get(i);
                 if (clazz.contains(jump)) {
                     row.add(first);
+                    automata.remove(jump);  // Удаляем эквивалетный элемент из автомата
                 }
                 else row.add(jump);
             }
             automata.put(first, row);
         }
+        return true;
     }
 }
