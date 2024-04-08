@@ -98,7 +98,6 @@ public class Determine {
                 Vector(vertex, dst, letterIdx, true);
             }
         }
-        return;
     }
     // Рекурсивный метод нахождения всех множеств состояний
     public void FindAutos(Auto auto, Set<Auto> dst, Map<Integer,
