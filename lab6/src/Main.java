@@ -2,6 +2,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import auto.*;
+
 /**
  * Лабораторная работа #6
  * "Минимизация конечных автоматов-распознавателей"
@@ -63,7 +64,7 @@ public class Main {
             }
             vertexJump.put(i, dst);
         }
-        List<String> labels = new ArrayList<>(Arrays.asList("Вершина"));
+        List<String> labels = new ArrayList<>(List.of("Вершина"));
         for (Character letter : alph) {
             labels.add(letter.toString());
         }
@@ -88,8 +89,7 @@ public class Main {
                 Set<Vertex> dstList = new HashSet<>(); // Множество вершин, куда можно попасть по букве
 
                 for (Vertex value : values) {
-                    Set<Vertex> dstPrev = new HashSet<>();
-                    dstPrev.addAll(dstList);
+                    Set<Vertex> dstPrev = new HashSet<>(dstList);
                     det.Vector(value, dstList, i, false);
                     // Вывод новых переходов
                     for (Vertex vx : dstList) {
@@ -106,7 +106,7 @@ public class Main {
                 // Смотрим какие состояния входят в наш новый список вершин
                 List<State> matchStates = new ArrayList<>();
                 for (State epState : epsStates) {
-                    Boolean isNested = true;
+                    boolean isNested = true;
                     for (Vertex vx : epState.getVertexs()) {
                         if (!dstList.contains(vx)) {
                             isNested = false;
@@ -125,7 +125,7 @@ public class Main {
         }
 
         // Вывод таблицы состояний
-        List<String> stLabels = new ArrayList<>(Arrays.asList("Состояние"));
+        List<String> stLabels = new ArrayList<>(List.of("Состояние"));
         for (int i = 1; i < alph.size(); i++) {
             stLabels.add(alph.get(i).toString());
         }
@@ -133,10 +133,10 @@ public class Main {
         // Начальное множество состояний
         List<State> start = new ArrayList<>();
         for (State state : epsStates) {
-            Boolean isStart = true;
+            boolean isStart = true;
             for (Vertex vx : state.getVertexs()) {
                 // Есть хоть одна не начальная вершина - состояние не подходит
-                if (vx.getState() != "start") {
+                if (!Objects.equals(vx.getState(), "start")) {
                     isStart = false;
                     break;
                 }
@@ -150,13 +150,18 @@ public class Main {
         }
         System.out.printf("Начальное множество: %s -> {%s}%n", startA.getLabel(), String.join(", ", startContainer));
         Map<Auto, List<Auto>> autoJump = new HashMap<>(); // Детерминированный автомат
-        Set<Auto> autos = new HashSet<>(Arrays.asList(startA)); // Множество найденных
+        Set<Auto> autos = new HashSet<>(List.of(startA)); // Множество найденных
         det.FindAutos(startA, autos, stateJump, autoJump);
         if (!det.isHasEndAuto()) {
             Auto lastAuto = (Auto) autoJump.keySet().toArray()[autoJump.size() - 1];
             lastAuto.setState("end");
         }
-        List<String> autoLabels = new ArrayList<>(Arrays.asList("Множество"));
+        // FIXME: Сортировка словаря
+        /*Map<Auto, List<Auto>> sortedAutoJump = autoJump.entrySet().stream().
+                sorted(Comparator.comparingInt(k -> k.getKey().getIdx())).
+                collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));*/
+
+        List<String> autoLabels = new ArrayList<>(List.of("Множество"));
         for (int i = 1; i < alph.size(); i++) {
             autoLabels.add(alph.get(i).toString());
         }
@@ -167,13 +172,13 @@ public class Main {
         else {
             Determine.BuildTable(autoLabels, autoJump, "Минимизированный автомат");
         }
-        /*Input wordInput = new Input("exit");
+        Input wordInput = new Input("exit");
         while (true) {
             String word = wordInput.Stroke("Введите слово (exit для выхода)", alph);
             if (word.equals("exit")) break;
             Boolean isValid = det.CheckWord(word, startA, autoJump);
             String validMsg = (isValid) ? "Слово соответствует автомату" : "Слово не соответствует автомату";
             System.out.println(validMsg);
-        }*/
+        }
     }
 }
