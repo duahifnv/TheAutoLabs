@@ -1,6 +1,4 @@
-import auto.Alphabet;
-import auto.Input;
-import auto.Vertex;
+import auto.*;
 
 import java.util.*;
 
@@ -32,5 +30,18 @@ public class Main {
 
         // Ввод детерминированного автомата
         Map<Vertex, List<Vertex>> automata = input.Automata(alph, size, vxs);
+        // Вывод детерминированного автомата
+        List<String> autoLabels = new ArrayList<>(List.of("Вершина"));
+        for (Character character : alph) {
+            autoLabels.add(character.toString());
+        }
+        // FIXME: Сортировка вершин по индексу
+        Utils.BuildTable(autoLabels, automata, "Детерминированный автомат");
+        /*if (!Minimize.minimize(autoJump, alph)) {
+            System.out.println("Исходный автомат уже минимален");
+        }
+        else {
+            Determine.BuildTable(autoLabels, automata, "Минимизированный автомат");
+        }*/
     }
 }
