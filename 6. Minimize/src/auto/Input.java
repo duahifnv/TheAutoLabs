@@ -65,4 +65,33 @@ public class Input {
         }
         return stroke;
     }
+    // Ввод детерминированного автомата
+    public Map<Vertex, List<Vertex>> Automata(List<Character> alph, int size, List<Vertex> vxs) {
+        Map<Vertex, List<Vertex>> automata = new HashMap<>();
+        System.out.println("Введите детерминированный автомат");
+        for (Vertex vx : vxs) {
+            List<Vertex> dst = new ArrayList<>(); // Ряд таблицы
+            for (Character character : alph) {
+                while (true) {
+                    String comm = String.format("Введите переход из q%d по %s: ",
+                            vx.getIdx(), character);
+                    int idx = Size(comm, 0, size - 1);
+                    boolean addFlag = true;
+                    for (Vertex dstVx : dst) {
+                        if (dstVx.getIdx() == idx) {
+                            System.out.printf("В q%d из q%d уже есть переход%n", idx, vx.getIdx());
+                            addFlag = false;
+                            break;
+                        }
+                    }
+                    if (addFlag) {
+                        dst.add(vxs.get(idx));
+                        break;
+                    }
+                }
+            }
+            automata.put(vx, dst);
+        }
+        return automata;
+    }
 }
