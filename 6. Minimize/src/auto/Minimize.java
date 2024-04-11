@@ -113,7 +113,7 @@ public class Minimize {
             // Переходы на эквивалентные элементы заменяем первым элементом
             for (int i = 0; i < alph.size(); i++) {
                 Vertex jump = automata.get(first).get(i);
-                if (clazz.contains(jump)) {
+                if (clazz.contains(jump) && jump != first) {
                     row.add(first);
                     automata.remove(jump);  // Удаляем эквивалетный элемент из автомата
                 }
