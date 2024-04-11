@@ -14,7 +14,7 @@ public class Input {
     public int Size(String comm, int min, int max) {
         int input;
         while(true) {
-            System.out.print(comm);
+            System.out.print(comm + ": ");
             try {
                 input = scan.nextInt();
             } catch (Exception NumberFormatException) {
@@ -35,7 +35,7 @@ public class Input {
         System.out.printf(" (%d, чтобы закончить)%n", br);
         Set<Integer> set = new HashSet<>();
         while (true) {
-            int num = Size(comm + ": ", -1, max);
+            int num = Size(comm, -1, max);
             if(num == br) {
                 if (set.size() < min) {
                     System.out.printf("Введите хотя бы %d чисел%n", min);
@@ -73,7 +73,7 @@ public class Input {
             List<Vertex> dst = new ArrayList<>(); // Ряд таблицы
             for (Character character : alph) {
                 while (true) {
-                    String comm = String.format("Введите переход из q%d по %s: ",
+                    String comm = String.format("Введите переход из q%d по %s",
                             vx.getIdx(), character);
                     int idx = Size(comm, 0, size - 1);
                     boolean addFlag = true;
