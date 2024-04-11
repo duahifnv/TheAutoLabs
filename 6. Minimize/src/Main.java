@@ -10,7 +10,7 @@ public class Main {
         List<Character> alph = a.GetAlph();
         // Размер графа
         Input input = new Input("exit");
-        int size = input.Size("Введите число вершин: ", 2, 10);
+        int size = input.Size("Введите число вершин", 2, 10);
         // Массив вершин
         List<Vertex> vxs = new ArrayList<>();
         for (int i = 0; i < size; i++) {
@@ -37,6 +37,16 @@ public class Main {
         }
         // FIXME: Сортировка вершин по индексу
         Utils.BuildTable(autoLabels, automata, "Детерминированный автомат");
+        // Находим и удаляем недостижимые вершины
+        Set<Vertex> unreachedVx = Minimize.findUnreachable(vxs.get(startIdx), automata, alph);
+        if (unreachedVx != null) {
+            List<String> format = unreachedVx.stream().map(x -> "q" + x.getIdx()).toList();
+            System.out.println("Были удалены недостижимые вершины: " + String.join(",", format));
+            for (Vertex vx : unreachedVx) {
+                automata.remove(vx);
+            }
+        }
+        Utils.BuildTable(autoLabels, automata, "Детерминированный автомат (без недостижимых)");
         /*if (!Minimize.minimize(autoJump, alph)) {
             System.out.println("Исходный автомат уже минимален");
         }
