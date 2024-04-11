@@ -5,7 +5,7 @@ package auto;
  */
 public class Vertex {
     private final int idx;
-    private String state = "none";
+    private String state;
     public Vertex(int idx, String state) {
         this.idx = idx;
         this.state = state;
