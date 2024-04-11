@@ -6,8 +6,10 @@ package auto;
 public class Vertex {
     private final int idx;
     private String state;
+    private int clazz;
     public Vertex(int idx) {
         this.idx = idx;
+        this.state = "none";
     }
     public Integer getIdx() {
         return idx;
@@ -17,5 +19,11 @@ public class Vertex {
     }
     public void setState(String state) {
         this.state = state;
+    }
+    public int getClazz() {
+        return clazz;
+    }
+    public void setClazz(int clazz) {
+        this.clazz = clazz;
     }
 }
