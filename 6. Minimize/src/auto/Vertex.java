@@ -6,9 +6,8 @@ package auto;
 public class Vertex {
     private final int idx;
     private String state;
-    public Vertex(int idx, String state) {
+    public Vertex(int idx) {
         this.idx = idx;
-        this.state = state;
     }
     public Integer getIdx() {
         return idx;
