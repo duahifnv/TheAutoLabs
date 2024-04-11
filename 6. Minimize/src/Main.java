@@ -47,11 +47,9 @@ public class Main {
             }
         }
         Utils.BuildTable(autoLabels, automata, "Детерминированный автомат (без недостижимых)");
-        /*if (!Minimize.minimize(autoJump, alph)) {
+        if (!Minimize.minimize(automata, alph)) {
             System.out.println("Исходный автомат уже минимален");
         }
-        else {
-            Determine.BuildTable(autoLabels, automata, "Минимизированный автомат");
-        }*/
+        Utils.BuildTable(autoLabels, automata, "Минимизированный автомат");
     }
 }
