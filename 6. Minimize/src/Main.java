@@ -36,7 +36,6 @@ public class Main {
             autoLabels.add(character.toString());
         }
         // FIXME: Сортировка вершин по индексу
-        Utils.BuildTable(autoLabels, automata, "Детерминированный автомат");
         // Находим и удаляем недостижимые вершины
         Set<Vertex> unreachedVx = Minimize.findUnreachable(vxs.get(startIdx), automata, alph);
         if (unreachedVx != null) {
