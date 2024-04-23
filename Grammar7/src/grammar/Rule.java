@@ -1,5 +1,8 @@
 package grammar;
 
-import java.util.List;
-public record Rule(String from, List<String> to) {
+public record Rule(String left, String right) {
+    @Override
+    public String toString() {
+        return left + " -> " + right;
+    }
 }
