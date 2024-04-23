@@ -1,5 +1,6 @@
 {
     "terminal": "bd+-",
-    "non_terminal": "AW",
-    "rules": "S->WA&W->b+|b-|d+|d-&A->WA&A->eps"
+    "non_terminal": "AWS",
+    "rules": "S->WA&W->b+|b-|d+|d-&A->WA&A->eps",
+    "start": "S"
 }
