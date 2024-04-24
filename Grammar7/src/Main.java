@@ -1,5 +1,4 @@
 import grammar.Grammar;
-import grammar.Type;
 import json.JSONmanager;
 
 public class Main {
