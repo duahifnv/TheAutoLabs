@@ -1,5 +1,7 @@
 package grammar;
 
+import utils.Utils;
+
 import java.util.List;
 
 public class TypeDetector {
@@ -27,10 +29,8 @@ public class TypeDetector {
             String right = rule.right();
             if (!isNonTerminal(left)) return false;
             if (right.equals("eps")) continue;
-            for (Character letter : right.substring(shift, right.length() - 1 + shift).toCharArray()) {
-                if (grammar.terminal().indexOf(letter) == -1) {
-                    return false;
-                }
+            for (Character element : right.substring(shift, right.length() - 1 + shift).toCharArray()) {
+                if (!isTerminal(element.toString())) return false;
             }
         }
         return true;
@@ -60,7 +60,8 @@ public class TypeDetector {
                 String ksi2 = left.substring(i + 1);
                 if (right.startsWith(ksi1) && right.endsWith(ksi2)) {
                     String gamma;
-                    gamma = right.replace(ksi1, "").replace(ksi2, "");
+                    gamma = right.replaceFirst(ksi1, "");
+                    gamma = Utils.replaceLast(gamma, ksi2, "");
                     if (gamma.isBlank()) return false;
                     break;
                 }
