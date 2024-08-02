@@ -1,6 +1,0 @@
-{
-    "terminal": "012",
-    "non_terminal": "AS",
-    "rules": "S->012&S->0AS2&A0->0A&A1->11",
-    "start": "S"
-}

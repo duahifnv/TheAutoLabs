@@ -1,0 +1,6 @@
+{
+    "terminal": "ab",
+    "non_terminal": "BCS",
+    "rules": "S->aBC&BC->b",
+    "start": "S"
+}

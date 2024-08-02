@@ -15,9 +15,9 @@ public class TypeDetector {
         if (isType3("left")) return Type.TYPE3L;
         if (isType3("right")) return Type.TYPE3R;
         if (isType2()) return Type.TYPE2;
-        if (isType1Dependent()) {
-            if (isType1Nonshort()) return Type.TYPE1NS;
-            return Type.TYPE1DEP;
+        if (isType1Nonshort()) {
+            if (isType1Dependent()) return Type.TYPE1DEP;
+            return Type.TYPE1NS;
         }
         return Type.TYPE0;
     }

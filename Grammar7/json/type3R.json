@@ -1,6 +1,0 @@
-{
-    "terminal": "abc",
-    "non_terminal": "AS",
-    "rules": "S->aS|bA&A->eps|cA",
-    "start": "S"
-}
