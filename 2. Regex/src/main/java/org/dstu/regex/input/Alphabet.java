@@ -1,4 +1,4 @@
-package org.dstu.regex;
+package org.dstu.regex.input;
 
 import java.util.ArrayList;
 import java.util.List;
