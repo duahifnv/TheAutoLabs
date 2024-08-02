@@ -1,3 +1,5 @@
+package org.dstu.regex;
+
 import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
