@@ -1,13 +1,11 @@
 package org.dstu.regex;
 
+import java.util.List;
 import java.util.Scanner;
 
-public class Programm {
-    public static void main(String[] args) {
-        AutoLabs lab = new AutoLabs();
-        lab.SetAlph();
-        lab.PrintAlph();
+public class RegexApp {
 
+    public static void main(String[] args) {
         String[] exps = {"^[a|b|c]+!$", "^[a|b|c]+cc$"};
 
         Scanner scan = new Scanner(System.in);
@@ -24,7 +22,8 @@ public class Programm {
             throw new Error("Число цепочек должно быть больше 0.");
         }
 
-        RegEx regex = new RegEx(lab.GetAlph(), exps[regexIdx], chain_count);
+        Input alphabet = new Alphabet();
+        RegEx regex = new RegEx(alphabet.getAlphabet(), exps[regexIdx], chain_count);
         regex.Generate();
         regex.PrintChains();
 
