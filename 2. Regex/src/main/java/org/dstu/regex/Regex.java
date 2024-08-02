@@ -1,55 +1,19 @@
 package org.dstu.regex;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Regex {
-    private String expression;
-    private static final String REGEX_SYMBOLS = "[|]?*+.!";
-    private String endSymbol;
-    private final List<Character> alphabet;
+    protected String expression;
+    protected static final String REGEX_SYMBOLS = "[|]?*+.!";
+    protected String endSymbol;
 
-    public Regex(List<Character> alphabet, String expression) {
-        this.alphabet = alphabet;
+    public Regex(String expression) {
         this.expression = expression;
-        compile(alphabet);
+        compile();
     }
 
-    private void compile(List<Character> alphabet) {
+    private void compile() {
         expression = formatExpression(expression);
-
         int prefixIndex = expression.indexOf('+');
         endSymbol = expression.substring(prefixIndex + 1);
-
-        alphabetValidation(alphabet);
-    }
-
-    private void alphabetValidation(List<Character> alphabet) throws IllegalArgumentException {
-        List<Character> alphabetFromExpression = new ArrayList<>();
-        for (char ch : expression.toCharArray()) {
-            if (REGEX_SYMBOLS.indexOf(ch) == -1 && !alphabetFromExpression.contains(ch)) {
-                alphabetFromExpression.add(ch);
-            }
-        }
-
-        if (alphabet.size() > alphabetFromExpression.size()) {
-            throw new IllegalArgumentException(
-                    "Алфавит " + alphabet + " содержит символы не из регулярного выражения!"
-            );
-        }
-        if (alphabet.size() < alphabetFromExpression.size()) {
-            throw new IllegalArgumentException(
-                    "В алфавите " + alphabet + " не хватает символов!"
-            );
-        }
-        System.out.println(alphabetFromExpression);
-        for (char ch : alphabet) {
-            if (!alphabetFromExpression.contains(ch)) {
-                throw new IllegalArgumentException(
-                        "Алфавит " + alphabet + " содержит символы не из регулярного выражения!"
-                );
-            }
-        }
     }
 
     protected String formatExpression(String expression) {
@@ -68,9 +32,5 @@ public class Regex {
 
     public String getEndSymbol() {
         return endSymbol;
-    }
-
-    public List<Character> getAlphabet() {
-        return alphabet;
     }
 }

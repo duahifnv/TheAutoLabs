@@ -7,7 +7,7 @@ public class ChainGenerator {
     private static int groupIndex = 1;
     private static int chainIndex;
     private static int concatIndex;
-    public static List<String> generateChains(Regex regex, int chainSize) {
+    public static List<String> generateChains(AlphabetRegex regex, int chainSize) {
         List<String> chains = new ArrayList<>();
         List<Character> alphabet = regex.getAlphabet();
         StringBuilder chain;

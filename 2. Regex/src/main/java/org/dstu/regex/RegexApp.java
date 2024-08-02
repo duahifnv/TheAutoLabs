@@ -1,5 +1,8 @@
 package org.dstu.regex;
 
+import org.dstu.regex.input.Alphabet;
+import org.dstu.regex.input.Input;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -17,15 +20,17 @@ public class RegexApp {
         regexIdx = (regexIdx == 0) ? 0 : 1;
 
         System.out.println("Введите число выводимых цепочек:");
-        int chain_count = scan.nextInt();
-        if (chain_count < 1) {
+        int chainSize = scan.nextInt();
+        if (chainSize < 1) {
             throw new Error("Число цепочек должно быть больше 0.");
         }
 
         Input alphabet = new Alphabet();
-        RegEx regex = new RegEx(alphabet.getAlphabet(), exps[regexIdx], chain_count);
-        regex.Generate();
-        regex.PrintChains();
+        AlphabetRegex regex = new AlphabetRegex(exps[regexIdx], alphabet.getAlphabet());
+        List<String> chains = ChainGenerator.generateChains(regex, chainSize);
+
+        System.out.printf("%d цепочек по регулярному выражению %s:%n", chainSize, regex.getExpression());
+        System.out.println(chains);
 
         scan.close();
     }
