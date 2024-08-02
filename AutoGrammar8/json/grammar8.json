@@ -1,6 +1,6 @@
 {
-    "terminal": "ab",
-    "non_terminal": "ABS",
-    "rules": "S->aA&S->bB&A->aB|a&B->bA|b",
+    "terminal": "abcd*",
+    "non_terminal": "SABCD",
+    "rules": "S->aA|bB&A->cC|*&C->cC|cA&B->dD|*&D->dD|dB",
     "start": "S"
 }
